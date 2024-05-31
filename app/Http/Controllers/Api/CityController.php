@@ -26,25 +26,59 @@ class CityController extends Controller
         }
     }
 
+    // public function store(Request $request){
+    //     $validator = Validator::make($request->all(), [
+    //         'city_name' => 'required'
+    //     ]);
+
+    //     if($validator->fails()){
+    //         return response()->json([
+    //             'status' => 422,
+    //             'errors' => $validator->messages()
+    //         ], 422);
+    //     }else{
+    //         $city = City::create([
+    //             'city_name' => $request->city_name
+    //         ]);
+
+    //         if($city){
+    //             return response()->json([
+    //                 'status' => 200,
+    //                 'message' => 'Thêm thành công thành phố'
+    //             ], 200);
+    //         }else{
+    //             return response()->json([
+    //                 'status' => 500,
+    //                 'message' => 'Lỗi'
+    //             ], 500);
+    //         }
+    //     }
+    // }
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
-            'city_name' => 'required'
+            '*.city_name' => 'required' // Sử dụng wildcard để kiểm tra mỗi phần tử
         ]);
-
+    
         if($validator->fails()){
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->messages()
             ], 422);
         }else{
-            $city = City::create([
-                'city_name' => $request->city_name
-            ]);
-
-            if($city){
+            $cities = [];
+            // Xử lý từng đối tượng trong mảng
+            foreach ($request->all() as $item) {
+                $city = City::create([
+                    'city_name' => $item['city_name']
+                ]);
+                $cities[] = $city;
+            }
+    
+            if(count($cities) > 0){
                 return response()->json([
                     'status' => 200,
-                    'message' => 'Thêm thành công thành phố'
+                    'message' => 'Thêm thành công các thành phố',
+                    'cities' => $cities
                 ], 200);
             }else{
                 return response()->json([
@@ -54,6 +88,7 @@ class CityController extends Controller
             }
         }
     }
+    
 
     public function show($id){
         $city = City::find($id);
