@@ -1,1 +1,1 @@
-Api: api-province-vietnam-production.up.railway.app
+Deloy: https://api-province-vietnam-production.up.railway.app/
